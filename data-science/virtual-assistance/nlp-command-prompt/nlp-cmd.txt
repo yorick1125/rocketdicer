@@ -1,0 +1,5 @@
+command to interact with a virtual assistant similar to chatgpt
+
+1. create command
+2. python script to get data to train transformer algorithm
+3. python script to act as virtual assistance. 
