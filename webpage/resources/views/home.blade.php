@@ -55,7 +55,7 @@
 
 		body{
 			color: yellow;
-			background-image: url('http://4.bp.blogspot.com/_5xJ_jlTUVG4/S_PHdyb_jyI/AAAAAAAABEg/FKj-Z8K-4WM/s1600/bigstockphoto_Blue_Brushed_4167376.jpg');
+			/*background-image: url('http://4.bp.blogspot.com/_5xJ_jlTUVG4/S_PHdyb_jyI/AAAAAAAABEg/FKj-Z8K-4WM/s1600/bigstockphoto_Blue_Brushed_4167376.jpg');*/
 		}
 
 		body {
@@ -103,7 +103,7 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item active">
 					<a class="nav-link" style="color:red;" href="/home">
-						<img ></img> Trading
+						<img ></img> Homepage
 					</a>
 				</li>
 				<li class="nav-item">
@@ -154,7 +154,40 @@
 	</footer>
 
 	<script>
+		function changeBackgroundColor(colors) {
+
+		}
+
+
+
+
+
+
 		setInterval(() => {
+			// Change background color depending on the day
+			const colors = [
+				{ time: 3, color: '#191970' },
+				{ time: 6, color: '#FEDDD0' },
+				{ time: 9, color: '#FF0000' },
+				{ time: 12, color: '#87CEFA' },
+				{ time: 15, color: '#F5A962' },
+				{ time: 18, color: '#FFA500' },
+				{ time: 21, color: '#00008B' },
+				{ time: 24, color: '#000000' }
+			];
+
+			
+			const date = new Date();
+			const currentHour = date.getHours();
+
+			for (let i = 0; i < colors.length; i++) {
+				if (currentHour === colors[i].time) {
+				document.body.style.backgroundColor = colors[i].color;
+				break;
+				}
+			}
+
+			changeBackgroundColor(colors);
 			const dateElement = document.getElementById('live-date');
 			const currentDate = new Date();
 			const formattedDate = currentDate.toLocaleString('en-US', {
@@ -166,8 +199,13 @@
 			second: 'numeric',
 			hour12: true,
 			});
+
 			dateElement.textContent = formattedDate;
+
 		}, 1000);
+
+
+
 	</script>
     
     <script src="https://s3.tradingview.com/tv.js"></script>

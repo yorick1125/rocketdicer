@@ -63,6 +63,14 @@
 			padding-bottom: 70px; /* make room for the sticky footer */
 		}
 
+        #chartContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+
+
+
 		footer {
 			position: fixed;
 			bottom: 0;
@@ -114,24 +122,23 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:blue;"  href="#">
+					<a class="nav-link" style="color:blue;"  href="/blog">
 						<img class="nav5"></img> Blog
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:#c02de6;"  href="#">
+					<a class="nav-link" style="color:#c02de6;"  href="https://play.picoctf.org/users/yorick1125">
 						<img class="nav6"></img> PicoCTF
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:magenta;"  href="#">
+					<a class="nav-link" style="color:magenta;"  href="/music">
 						<img class="nav7"></img> Music
 					</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
-
 
 
 	<div class="container">

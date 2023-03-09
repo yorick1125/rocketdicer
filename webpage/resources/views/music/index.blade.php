@@ -63,6 +63,14 @@
 			padding-bottom: 70px; /* make room for the sticky footer */
 		}
 
+        #chartContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+
+
+
 		footer {
 			position: fixed;
 			bottom: 0;
@@ -114,17 +122,17 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:blue;"  href="#">
+					<a class="nav-link" style="color:blue;"  href="/blog">
 						<img class="nav5"></img> Blog
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:#c02de6;"  href="#">
+					<a class="nav-link" style="color:#c02de6;"  href="https://play.picoctf.org/users/yorick1125">
 						<img class="nav6"></img> PicoCTF
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:magenta;"  href="#">
+					<a class="nav-link" style="color:magenta;"  href="/music">
 						<img class="nav7"></img> Music
 					</a>
 				</li>
@@ -136,12 +144,22 @@
 
 	<div class="container">
 		<h1>Music</h1>
+
 		<form>
 			<label for="audio-file">Upload Audio File:</label>
 			<input type="file" id="audio-file" name="audio-file">
 			<button type="submit">Submit</button>
 		</form>
+
+		<ul>
+			@foreach ($songs as $song)
+				<li>{{ $song.name }}</li>
+				<li>{{ $song.artist }}</li>
+				<li>{{ $song.release_date }}</li>
+			@endforeach
+		</ul>
 	</div>
+
 
 	<footer>
 		<div class="container d-flex justify-content-between align-items-center">
