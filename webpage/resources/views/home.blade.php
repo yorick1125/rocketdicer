@@ -55,7 +55,8 @@
 
 		body{
 			color: yellow;
-			/*background-image: url('http://4.bp.blogspot.com/_5xJ_jlTUVG4/S_PHdyb_jyI/AAAAAAAABEg/FKj-Z8K-4WM/s1600/bigstockphoto_Blue_Brushed_4167376.jpg');*/
+			text-align: center;
+			background-image: url('http://4.bp.blogspot.com/_5xJ_jlTUVG4/S_PHdyb_jyI/AAAAAAAABEg/FKj-Z8K-4WM/s1600/bigstockphoto_Blue_Brushed_4167376.jpg');
 		}
 
 		body {
@@ -68,6 +69,11 @@
             height: 100%;
         }
 
+		.calendar{
+			margin: auto;
+			padding: auto;
+		}
+
 
 
 
@@ -76,8 +82,7 @@
 			bottom: 0;
 			width: 100%;
 			height: 70px; /* same height as the padding-bottom of the body */
-			background-image: url('https://wallpaperaccess.com/full/1092769.png');
-			color: rgb(255, 239, 0);
+			background-image: url('http://wonderfulengineering.com/wp-content/uploads/2014/09/Purple-wallpaper-8.jpg');
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -88,6 +93,29 @@
 		h1 {
   			text-align: center;
 		}
+
+		.finance-table {
+ 			 display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			max-width: 800px; /* Optional - set the maximum width of the table */
+		}
+
+		th, td {
+			text-align: center;
+			padding: 10px;
+			border: 1px solid black;
+		}
+
+		th {
+			background-color: #ff0000;
+		}
+
 
 	</style>
 </head>
@@ -142,8 +170,54 @@
 
 
 
-    <div id="chartContainer"></div>
 
+	<div class="calendar">
+        <div class="row">
+            <div class="col-md-12" style="padding: 20px;">
+                <h2>Economic Forex Calendar (US and Canada)</h2>
+				<div class="finance-table">
+					<table>
+						<thead>
+						<tr>
+							<th>Fundamental Data</th>
+							<th>USD</th>
+							<th>CAD</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>Int Rates</td>
+							<td>{{ rand(0, 100) }}%</td>
+							<td id="cad_interest_rates">20</td>
+						</tr>
+						<tr>
+							<td>Inflation</td>
+							<td>{{ rand(0, 100) }}%</td>
+							<td id="cad_inflation"></td>
+						</tr>
+						<tr>
+							<td>Unemployment</td>
+							<td>{{ rand(0, 100) }}%</td>
+							<td id="cad_unemployment"></td>
+						</tr>
+						<tr>
+							<td>GDP Growth</td>
+							<td>{{ rand(0, 100) }}%</td>
+							<td id="cad_gdp_growth"></td>
+						</tr>
+						<tr>
+							<td>Retail Sentiment</td>
+							<td>{{ rand(0, 100) }}%</td>
+							<td></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="chartContainer"></div>
 
 
 	<footer>
@@ -154,40 +228,25 @@
 	</footer>
 
 	<script>
-		function changeBackgroundColor(colors) {
 
+		async function fetchData() {
+			// Fetch latest inflation rate
+			const inflationUrl = 'https://www.bankofcanada.ca/valet/observations/group/CPI-All-items/json';
+
+			const inflationResponse = await fetch(inflationUrl);
+			const inflationData = await inflationResponse.json();
+			const latestInflationRate = inflationData.observations.find(observation => observation.attributes['class'] == 'CPI-common' && observation.attributes['frequency'] == 'Monthly' && observation.attributes['adjustment'] == 'Seasonally adjusted' && observation.attributes['unit'] == 'Percent' && observation.attributes['excluded'] == false).value;
+
+			// Return latest inflation rate as a string
+			return { inflation_rate: latestInflationRate.toString() + '%' };
 		}
 
 
 
 
 
-
-		setInterval(() => {
-			// Change background color depending on the day
-			const colors = [
-				{ time: 3, color: '#191970' },
-				{ time: 6, color: '#FEDDD0' },
-				{ time: 9, color: '#FF0000' },
-				{ time: 12, color: '#87CEFA' },
-				{ time: 15, color: '#F5A962' },
-				{ time: 18, color: '#FFA500' },
-				{ time: 21, color: '#00008B' },
-				{ time: 24, color: '#000000' }
-			];
-
-			
-			const date = new Date();
-			const currentHour = date.getHours();
-
-			for (let i = 0; i < colors.length; i++) {
-				if (currentHour === colors[i].time) {
-				document.body.style.backgroundColor = colors[i].color;
-				break;
-				}
-			}
-
-			changeBackgroundColor(colors);
+		setInterval(async () => {
+			// Show date at the bottom right of the footer
 			const dateElement = document.getElementById('live-date');
 			const currentDate = new Date();
 			const formattedDate = currentDate.toLocaleString('en-US', {
@@ -201,6 +260,15 @@
 			});
 
 			dateElement.textContent = formattedDate;
+
+
+			// Update Economic Data
+			const econ_data = await fetchData();
+
+			document.getElementById('cad_interest_rates').innerText = 20;
+			document.getElementById('cad_inflation').innerHTML = econ_data.inflation_rate
+			document.getElementById('cad_unemployment').innerHTML = econ_data.unemployment_rate
+			document.getElementById('cad_gdp_growth').innerHTML = econ_data.gdp_growth_rate
 
 		}, 1000);
 
