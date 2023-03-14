@@ -45,9 +45,10 @@ class UserController extends Controller
 
         $validatedData['password'] = Hash::make($validatedData['password']);
 
+
         User::create($validatedData);
 
-        return redirect()->route('users.index')
+        return redirect()->route('home')
             ->with('success', 'User created successfully.');
     }
 
@@ -96,7 +97,7 @@ class UserController extends Controller
 
         $user->update($validatedData);
 
-        return redirect()->route('users.index')
+        return redirect()->route('')
             ->with('success', 'User updated successfully.');
     }
 

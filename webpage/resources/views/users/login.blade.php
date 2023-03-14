@@ -77,7 +77,6 @@
 			width: 100%;
 			height: 70px; /* same height as the padding-bottom of the body */
 			background-image: url('https://wallpaperaccess.com/full/1092769.png');
-			color: rgb(255, 239, 0);
 			display: flex;
 			justify-content: space-between;
 			align-items: center;

@@ -13,10 +13,22 @@ Route::get('/', function () {
     return view('home');
 });
 
+/* User Controller */
 Route::get('/home', [HomeController::class, 'index']);
+
+/* Blog Controller */
 Route::get('/blog', [BlogController::class, 'index']);
+
+/* Music Controller */
 Route::get('/music', [MusicController::class, 'index']);
-Route::get('/register', [UserController::class, 'index']);
+
+/* User Controller */
+Route::get('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'store']);
+Route::post('/logout', [UserController::class, 'logout']);
+
+Route::get('/register', [UserController::class, 'create']);
+Route::post('/register', [UserController::class, 'store']);
 
 
 

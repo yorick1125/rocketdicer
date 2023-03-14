@@ -147,6 +147,9 @@
 		<form method="POST" action="/register">
 			@csrf
 
+			<label for="name">Name</label>
+			<input id="name" type="text" name="name" required>
+
 			<label for="email">Email</label>
 			<input id="email" type="email" name="email" required autofocus>
 
@@ -159,6 +162,7 @@
 			<button type="submit" class="btn btn-primary">Register</button>
 		</form>
 	</div>
+
 
 	<footer>
 		<div class="container d-flex justify-content-between align-items-center">

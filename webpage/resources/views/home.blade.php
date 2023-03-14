@@ -174,7 +174,7 @@
 	<div class="calendar">
         <div class="row">
             <div class="col-md-12" style="padding: 20px;">
-                <h2>Economic Forex Calendar (US and Canada)</h2>
+                <h2>Economic Forex Trading Data(US and Canada)</h2>
 				<div class="finance-table">
 					<table>
 						<thead>
@@ -187,27 +187,27 @@
 						<tbody>
 						<tr>
 							<td>Int Rates</td>
-							<td>{{ rand(0, 100) }}%</td>
-							<td id="cad_interest_rates">20</td>
+							<td id="usd_interest_rates"></td>
+							<td id="cad_interest_rates"></td>
 						</tr>
 						<tr>
 							<td>Inflation</td>
-							<td>{{ rand(0, 100) }}%</td>
+							<td id="usd_inflation"></td>
 							<td id="cad_inflation"></td>
 						</tr>
 						<tr>
 							<td>Unemployment</td>
-							<td>{{ rand(0, 100) }}%</td>
+							<td id="usd_unemployment"></td>
 							<td id="cad_unemployment"></td>
 						</tr>
 						<tr>
 							<td>GDP Growth</td>
-							<td>{{ rand(0, 100) }}%</td>
+							<td id="usd_gdp_growth"></td>
 							<td id="cad_gdp_growth"></td>
 						</tr>
 						<tr>
 							<td>Retail Sentiment</td>
-							<td>{{ rand(0, 100) }}%</td>
+							<td></td>
 							<td></td>
 						</tr>
 						</tbody>
@@ -216,6 +216,8 @@
             </div>
         </div>
     </div>
+
+	<h2>Technical Forex Trading Data(US and Canada)</h2>
 
     <div id="chartContainer"></div>
 
@@ -229,48 +231,132 @@
 
 	<script>
 
-		async function fetchData() {
-			// Fetch latest inflation rate
-			const inflationUrl = 'https://www.bankofcanada.ca/valet/observations/group/CPI-All-items/json';
+	const API_KEY = "SIPxlSNq6uddlJkN1Es47g==g8kZb3UrfqhB0ht4";
 
-			const inflationResponse = await fetch(inflationUrl);
-			const inflationData = await inflationResponse.json();
-			const latestInflationRate = inflationData.observations.find(observation => observation.attributes['class'] == 'CPI-common' && observation.attributes['frequency'] == 'Monthly' && observation.attributes['adjustment'] == 'Seasonally adjusted' && observation.attributes['unit'] == 'Percent' && observation.attributes['excluded'] == false).value;
+	async function fetchData() {
+		return {
+			canada: {
+				int_rate: await fetchIntRate("canada"),
+				inflation: await fetchInflation("canada"),
+				unemployment: await fetchUnemployment("canada"),
+				gdp_growth: await fetchGdpGrowth("canada")
+			},
+			us: {
+				int_rate: await fetchIntRate("united states"),
+				inflation: await fetchInflation("united states"),
+				unemployment: await fetchUnemployment("united states"),
+				gdp_growth: await fetchGdpGrowth("united states")
+			}
+		};
+	}
 
-			// Return latest inflation rate as a string
-			return { inflation_rate: latestInflationRate.toString() + '%' };
-		}
+	async function fetchIntRate(country) {
+		const response = await fetch(
+			"https://api.api-ninjas.com/v1/interestrate?country=" + country,
+			{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Api-Key": API_KEY
+			}
+			}
+		);
+		const json = await response.json();
+
+		return json.central_bank_rates[0].rate_pct;
+	}
+
+	async function fetchInflation(country) {
+		const response = await fetch(
+			"https://api.api-ninjas.com/v1/inflation?country=" + country,
+			{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Api-Key": API_KEY
+			}
+			}
+		);
+		const json = await response.json();
+
+		return json[0].yearly_rate_pct;
+	}
+
+	async function fetchUnemployment(country) {
+		const response = await fetch(
+			"https://api.api-ninjas.com/v1/country?name=" + country,
+			{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Api-Key": API_KEY
+			}
+			}
+		);
+		const json = await response.json();
+
+		return json[0].unemployment;
+	}
+
+	async function fetchGdpGrowth(country) {
+		const response = await fetch(
+			"https://api.api-ninjas.com/v1/country?name=" + country,
+			{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Api-Key": API_KEY
+			}
+			}
+		);
+		const json = await response.json();
+
+		return json[0].gdp_growth;
+	}
 
 
 
 
 
-		setInterval(async () => {
-			// Show date at the bottom right of the footer
-			const dateElement = document.getElementById('live-date');
-			const currentDate = new Date();
-			const formattedDate = currentDate.toLocaleString('en-US', {
-			month: 'long',
-			day: 'numeric',
-			year: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric',
-			hour12: true,
-			});
+	setInterval(async () => {
+		// Show date at the bottom right of the footer
+		const dateElement = document.getElementById('live-date');
+		const currentDate = new Date();
+		const formattedDate = currentDate.toLocaleString('en-US', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+		hour12: true,
+		});
 
-			dateElement.textContent = formattedDate;
+		dateElement.textContent = formattedDate;
 
 
-			// Update Economic Data
-			const econ_data = await fetchData();
+		// Update Economic Data
+		const econ_data = await fetchData();
 
-			document.getElementById('cad_interest_rates').innerText = 20;
-			document.getElementById('cad_inflation').innerHTML = econ_data.inflation_rate
-			document.getElementById('cad_unemployment').innerHTML = econ_data.unemployment_rate
-			document.getElementById('cad_gdp_growth').innerHTML = econ_data.gdp_growth_rate
+		document.getElementById('cad_interest_rates').innerText = econ_data.canada.int_rate + "%";
+		document.getElementById('cad_interest_rates').style.color = "#1ae565";
+		document.getElementById('cad_inflation').innerHTML = econ_data.canada.inflation + "%";
+		document.getElementById('cad_inflation').style.color = "#1ae565";
+		document.getElementById('cad_unemployment').innerHTML = econ_data.canada.unemployment + "%";
+		document.getElementById('cad_unemployment').style.color = "#1ae565";
+		document.getElementById('cad_gdp_growth').innerHTML = econ_data.canada.gdp_growth + "%";
+		document.getElementById('cad_gdp_growth').style.color = "#1ae565";
 
-		}, 1000);
+		document.getElementById('usd_interest_rates').innerText = econ_data.us.int_rate + "%";
+		document.getElementById('usd_interest_rates').style.color = "#1ae565";
+		document.getElementById('usd_inflation').innerHTML = econ_data.us.inflation + "%";
+		document.getElementById('usd_inflation').style.color = "#1ae565";
+		document.getElementById('usd_unemployment').innerHTML = econ_data.us.unemployment + "%";
+		document.getElementById('usd_unemployment').style.color = "#1ae565";
+		document.getElementById('usd_gdp_growth').innerHTML = econ_data.us.gdp_growth + "%";
+		document.getElementById('usd_gdp_growth').style.color = "#1ae565";
+
+	}, 1000);
 
 
 
